@@ -2,18 +2,25 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 
 const baseURL = "http://localhost:8000/player?skip="
+// const baseURL2 = "http://localhost:8000/player"
 
 
 function PlayerDetails() {
 
     const [player, setPlayer] = useState(null);
     const [toggle, setToggle] = useState(0);
+    const [disabled, setDisabled] = useState(false);
 
     useEffect(() => {
         axios.get(baseURL + "0").then((response) => {
             setPlayer(response.data);
         });
     }, []);
+
+    useEffect(() => {
+        player && console.log(player[0].end)
+        player && setDisabled(player[0].end)
+    }, [player]);
 
     useEffect(() => {
         axios.get(baseURL + toggle).then((response) => {
@@ -29,9 +36,11 @@ function PlayerDetails() {
     }
     
 
-    // player && console.log(player[0].profile, baseURL);
+    player && console.log(player[0].end, disabled);
 
-    return <div className="playerDetails">
+    return <div>
+        <nav>Top Footbal Players</nav>
+        <div className="playerDetails">
         <button disabled={toggle == 0 && true} className="playerButton" onClick={previous}>Previous</button>
         {player && <div className="player">
             <img src={player[0].profile} className="profile"></img>
@@ -45,8 +54,9 @@ function PlayerDetails() {
                 <p><span>Totlal Matches: </span>{player[0].totalMatches}</p>
             </div>
         </div>}
-        <button className="playerButton" onClick={next}>Next</button>
+        <button disabled={player && disabled == "true"} className="playerButton" onClick={next}>Next</button>
 
+    </div>
     </div>
 
 }
